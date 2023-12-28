@@ -47,20 +47,20 @@ for member in Color:
 
 
 card_icons = {
-    Card(kind=CardKind.mr_winter): '❄️  ',
-    Card(kind=CardKind.wand): '🪄',
-    Card(kind=CardKind.golden_unicorn): '🦄',
-    Card(kind=CardKind.rainbow_fairy): '🌈',
-    ColorFairyCard(kind=CardKind.color_fairy, color=Color.purple): '🟣 ',
-    ColorFairyCard(kind=CardKind.color_fairy, color=Color.pink):   '🔴 ',
-    ColorFairyCard(kind=CardKind.color_fairy, color=Color.yellow): '🟡 ',
-    ColorFairyCard(kind=CardKind.color_fairy, color=Color.orange): '🟠 ',
+    Card(kind=CardKind.mr_winter): "❄️  ",
+    Card(kind=CardKind.wand): "🪄",
+    Card(kind=CardKind.golden_unicorn): "🦄",
+    Card(kind=CardKind.rainbow_fairy): "🌈",
+    ColorFairyCard(kind=CardKind.color_fairy, color=Color.purple): "🟣 ",
+    ColorFairyCard(kind=CardKind.color_fairy, color=Color.pink): "🔴 ",
+    ColorFairyCard(kind=CardKind.color_fairy, color=Color.yellow): "🟡 ",
+    ColorFairyCard(kind=CardKind.color_fairy, color=Color.orange): "🟠 ",
 }
 color_icons = {
-    Color.purple: '🟣 ',
-    Color.pink:   '🔴 ',
-    Color.yellow: '🟡 ',
-    Color.orange: '🟠 ',
+    Color.purple: "🟣 ",
+    Color.pink: "🔴 ",
+    Color.yellow: "🟡 ",
+    Color.orange: "🟠 ",
 }
 
 
@@ -96,7 +96,11 @@ def play(n_players):
             for color in set(Color) - jewels:
                 if hand[ColorFairyCard(kind=CardKind.color_fairy, color=color)] >= 3:
                     can_buy.add(color)
-                elif num_rainbow_cards + hand[ColorFairyCard(kind=CardKind.color_fairy, color=color)] >= 3:
+                elif (
+                    num_rainbow_cards
+                    + hand[ColorFairyCard(kind=CardKind.color_fairy, color=color)]
+                    >= 3
+                ):
                     can_buy_with_rainbow.add(color)
             if can_buy:
                 color = can_buy.pop()
@@ -122,15 +126,13 @@ def log(state):
     output += "".join(color_icons[color] for color in state.jewels)
     output += "\nFlowers "
     output += (
-        f"🟣 {state.board['purple'] * '❄️  '}" + 
-        f"    🔴 {state.board['pink'] * '❄️  '}" + 
-        f"    🟡 {state.board['yellow'] * '❄️  '}" + 
-        f"    🟠 {state.board['orange'] * '❄️  '}\nHands "
+        f"🟣 {state.board['purple'] * '❄️  '}"
+        + f"    🔴 {state.board['pink'] * '❄️  '}"
+        + f"    🟡 {state.board['yellow'] * '❄️  '}"
+        + f"    🟠 {state.board['orange'] * '❄️  '}\nHands "
     )
     for hand in state.hands:
-        output += (
-            "".join(card_icons[card] for card in hand.elements())
-        )
+        output += "".join(card_icons[card] for card in hand.elements())
         output += "    "
     output += "\n"
     print(output, file=sys.stderr)
@@ -148,5 +150,5 @@ if __name__ == "__main__":
             log(state)
             is_win = len(state.jewels) == 4
             if is_win:
-                n_wins +=1
+                n_wins += 1
     print(f"{n_wins} wins / {n_games} games")
