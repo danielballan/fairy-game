@@ -91,20 +91,22 @@ def play(n_players):
             hand.update([card])
             # Check whether we can afford any jewels.
             num_rainbow_cards = hand[Card(kind=CardKind.rainbow_fairy)]
-            for card in [
-                ColorFairyCard(kind=CardKind.color_fairy, color=Color.purple),
-                ColorFairyCard(kind=CardKind.color_fairy, color=Color.pink),
-                ColorFairyCard(kind=CardKind.color_fairy, color=Color.yellow),
-                ColorFairyCard(kind=CardKind.color_fairy, color=Color.orange),
-            ]:
-                if card.color in jewels:
-                    # We already have the jewel of this color.
-                    continue
-                if num_rainbow_cards + hand[card] >= 3:
-                    num_rainbow_cards_to_spend = max(3 - hand[card], 3)
-                    hand[card] = 0
-                    hand[Card(kind=CardKind.rainbow_fairy)] -= num_rainbow_cards_to_spend
-                    jewels.add(card.color)
+            can_buy = set()
+            can_buy_with_rainbow = set()
+            for color in set(Color) - jewels:
+                if hand[ColorFairyCard(kind=CardKind.color_fairy, color=color)] >= 3:
+                    can_buy.add(color)
+                elif num_rainbow_cards + hand[ColorFairyCard(kind=CardKind.color_fairy, color=color)] >= 3:
+                    can_buy_with_rainbow.add(color)
+            if can_buy:
+                color = can_buy.pop()
+                hand[card] -= 3
+                jewels.add(color)
+            elif can_buy_with_rainbow:
+                num_rainbow_cards_to_spend = max(3 - hand[card], 3)
+                hand[card] = 0
+                hand[Card(kind=CardKind.rainbow_fairy)] -= num_rainbow_cards_to_spend
+                jewels.add(color)
             while hand.total() > 5:
                 # Discard at random
                 hand.subtract([random.choice(list(hand.elements()))])
